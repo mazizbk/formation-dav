@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les prix du carburant zone Auvergne-Rhône-Alpe
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="album py-5" id="dataPrice">
+		<div class="container">
+			<h1 class="mb-5">Prix carburant</h1>
+
+			{{ form_start(formView) }}
+
+			{{ form_errors(formView) }}
+
+			<div class="row">
+				<div class="col-3">
+					{{ form_row(formView.com_arm_name) }}
+
+				</div>
+				<div class="col-3">
+					{{ form_row(formView.adresse) }}
+				</div>
+
+				<div class="col-3">
+					{{ form_row(formView.prix_nom) }}
+				</div>
+			</div>
+
+
+			<button type="submit" class="btn btn-primary">
+				<i class="fas fa-save"></i>
+				Rechercher
+			</button>
+
+			{{ form_end(formView) }}
+
+			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+				{% for dataPriceFule in dataPriceFules %}
+
+					<div class="col">
+						<div class="card shadow-lg h-100 m-2">
+							<div class="card-body">
+								<h5 class="card-title">{{ dataPriceFule.com_arm_name }}</h5>
+								<p class="card-text">
+									<span class="badge bg-secondary">{{dataPriceFule.prix_nom}}</span>
+								</p>
+								<p class="card-text">
+									<span class="badge bg-secondary">{{dataPriceFule.prix_valeur|format_currency('EUR', {rounding_mode: 'floor'})}}</span>
+								</p>
+								<span class="">{{dataPriceFule.adresse}}</span>
+
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
