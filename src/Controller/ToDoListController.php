@@ -15,51 +15,47 @@ class ToDoListController extends AbstractController
     #[Route('/to/do/list', name: 'app_to_do_list')]
     public function index(): Response
     {
-
-
         return $this->render('to_do_list/index.html.twig', [
             'controller_name' => 'ToDoListController',
         ]);
     }
 
 
-    #[Route('/to/do/list/create', name: 'create_task',methods: 'POST')]
-    public function create(Request $request,EntityManagerInterface $entityManager,ValidatorInterface $validator) :Response
+    #[Route('/to/do/list/create', name: 'create_task', methods: 'POST')]
+    public function create(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
         $taskDescription = $request->request->get('task_description');
         $task = new Task();
 
         $errors = $validator->validate($task);
 
-        if(!count($errors)) {
+        if (!count($errors)) {
 
             $task->setTaskDescription($taskDescription);
             $entityManager->persist($task);
             $entityManager->flush();
-        }else{
+        } else {
             $messages = [];
             foreach ($errors as $violation) {
                 $messages[] = $violation->getMessage();
             }
             $this->addFlash(
-                'error', $messages
+                'error',
+                $messages
             );
         }
 
         return $this->redirectToRoute('app_to_do_list');
-
     }
 
-    #[Route('/to/do/list/switch/{id}', name: 'switch_task',methods: 'GET')]
-    public function switch($id) {
-
+    #[Route('/to/do/list/switch/{id}', name: 'switch_task', methods: 'GET')]
+    public function switch($id)
+    {
     }
 
 
-    #[Route('/to/do/list/remove/{id}', name: 'remove_task',methods: 'GET')]
-    public function remove($id) {
-
+    #[Route('/to/do/list/remove/{id}', name: 'remove_task', methods: 'GET')]
+    public function remove($id)
+    {
     }
-
 }
-
