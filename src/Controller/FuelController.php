@@ -3,19 +3,19 @@
 namespace App\Controller;
 
 use App\Form\PriceSearchType;
-use App\Service\Api\Fule\CallFuleApiService;
 use App\Service\Api\Fule\FilterFuleData;
+use App\Service\Api\Fule\CallFuleApiService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 
-
-class FirstController extends AbstractController
+class FuelController extends AbstractController
 {
     /**
      * @param CallFuleApiService $callFuleApiService
@@ -27,9 +27,25 @@ class FirstController extends AbstractController
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      */
-    #[Route('/first', name: 'home')]
-    public function index(CallFuleApiService $callFuleApiService, Request $request, FilterFuleData $filter): Response
+    #[Route('/', name: 'home')]
+    public function index(Request $request, CallFuleApiService $callFuleApiService, FilterFuleData $filter): Response
     {
+
+        //$user = $userRepository->findOneBy(['id' => 51])->getVideos()->toArray()[0]->getTitle();
+
+        //dd($user);
+
+
+        $this->addFlash('notice', 'Nombre d\'utilisateur ' . 0);
+
+
+
+
+        //$localeSwitcher->setLocale('fr');
+
+        //$message = $trans->trans('Your comment is pending approval');
+
+        // dd($message);
 
         $fulePricesAll = $callFuleApiService->getPriceFule();
 

@@ -1,0 +1,28 @@
+{
+  "name": "formation-dav",
+  "version": "1.0.0",
+  "description": "formation",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mazizbk/formation-dav.git"
+  },
+  "author": "aziz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mazizbk/formation-dav/issues"
+  },
+  "homepage": "https://github.com/mazizbk/formation-dav#readme",
+  "devDependencies": {
+    "@symfony/webpack-encore": "^4.2.0",
+    "jquery": "^3.6.3",
+    "webpack-notifier": "^1.15.0"
+  }
+}

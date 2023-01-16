@@ -33,7 +33,6 @@
 				<i class="fas fa-save"></i>
 				Rechercher
 			</button>
-
 			{{ form_end(formView) }}
 
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -58,5 +57,16 @@
 			</div>
 		</div>
 	</div>
+
+	{% for label,messages in app.flashes()%}
+
+		{% for message in messages %}
+			<div>
+				<span class="test-style">{{message}}</span>
+				{{label}}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
 
 {% endblock %}
