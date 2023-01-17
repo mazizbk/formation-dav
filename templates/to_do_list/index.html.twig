@@ -21,33 +21,26 @@
 			<h4 class="card-title">Awesome Todo list</h4>
 			<div class="add-items d-flex">
 				<form method="post" action="{{ path('create_task') }}">
-					<input type="text" class="form-control todo-list-input" name="task" placeholder="What do you need to do today?">
+					<input type="text" class="form-control todo-list-input" name="task_description" placeholder="What do you need to do today?">
 					<button class="add btn btn-primary font-weight-bold todo-list-add-btn">Add</button>
 				</form>
 
 			</div>
 			<div class="list-wrapper">
 				<ul class="d-flex flex-column-reverse todo-list">
-					<li>
-						<div class="form-check">
-							<label class="form-check-label">
-								<input class="checkbox" type="checkbox">
-								For what reason would it be advisable.
-								<i class="input-helper"></i>
-							</label>
-						</div>
-						<a href="{{ path('remove_task',{'id':1}) }}"></a><i class="remove bi bi-trash3"></i>
-					</li>
-					<li class="completed">
-						<div class="form-check">
-							<label class="form-check-label">
-								<input class="checkbox" type="checkbox" checked="">
-								For what reason would it be advisable for me to think.
-								<i class="input-helper"></i>
-							</label>
-						</div>
-						<i class="remove bi bi-trash3"></i>
-					</li>
+					{% for task in tasks %}
+						<li {% if task.isStatusTask %} class="completed" {% endif %}>
+							<div class="form-check">
+								<a class="form-check-label" href="{{ path('switch_task',{'id':task.id}) }}">
+
+									{{task.getTaskDescription}}
+									<i class="input-helper"></i>
+								</a>
+							</div>
+							<a class="remove bi bi-trash3" href="{{ path('remove_task',{'id':task.id}) }}"></a>
+						</li>
+					{% endfor %}
+
 
 				</ul>
 			</div>

@@ -3,20 +3,24 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ToDoListController extends AbstractController
 {
     #[Route('/to/do/list', name: 'app_to_do_list')]
-    public function index(): Response
+    public function index(TaskRepository  $taskRepository): Response
     {
+        $tasks = $taskRepository->findAll();
+
         return $this->render('to_do_list/index.html.twig', [
-            'controller_name' => 'ToDoListController',
+            'tasks' => $tasks,
         ]);
     }
 
@@ -26,12 +30,19 @@ class ToDoListController extends AbstractController
     {
         $taskDescription = $request->request->get('task_description');
         $task = new Task();
-
-        $errors = $validator->validate($task);
+        $constraints = [
+            new NotBlank(), // Allow relative protocol
+        ];
+        $errors = $validator->validate($taskDescription, $constraints);
 
         if (!count($errors)) {
 
             $task->setTaskDescription($taskDescription);
+
+            $task->setCreatedAt(new \DateTime());
+            $task->setUpdatedAt(new \DateTime());
+            $task->setDeletedAt(new \DateTime());
+
             $entityManager->persist($task);
             $entityManager->flush();
         } else {
@@ -49,13 +60,21 @@ class ToDoListController extends AbstractController
     }
 
     #[Route('/to/do/list/switch/{id}', name: 'switch_task', methods: 'GET')]
-    public function switch($id)
+    public function switch(Task $task, EntityManagerInterface $entityManager)
     {
+        $task->setStatusTask(!$task->isStatusTask());
+        $entityManager->flush();
+        return $this->redirectToRoute('app_to_do_list');
     }
 
 
+
     #[Route('/to/do/list/remove/{id}', name: 'remove_task', methods: 'GET')]
-    public function remove($id)
+    public function remove(Task $id, EntityManagerInterface $entityManager)
     {
+
+        $entityManager->remove($id);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_to_do_list');
     }
 }
