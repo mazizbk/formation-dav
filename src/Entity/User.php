@@ -29,9 +29,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Video::class, cascade: ['remove'], orphanRemoval: true)]
-    private Collection $videos;
-
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
@@ -49,7 +46,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->videos = new ArrayCollection();
         $this->followed = new ArrayCollection();
         $this->following = new ArrayCollection();
     }
@@ -124,35 +120,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    /**
-     * @return Collection<int, Video>
-     */
-    public function getVideos(): Collection
-    {
-        return $this->videos;
-    }
 
-    public function addVideo(Video $video): self
-    {
-        if (!$this->videos->contains($video)) {
-            $this->videos->add($video);
-            $video->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVideo(Video $video): self
-    {
-        if ($this->videos->removeElement($video)) {
-            // set the owning side to null (unless already changed)
-            if ($video->getUser() === $this) {
-                $video->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getFirstname(): ?string
     {

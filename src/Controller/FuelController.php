@@ -31,7 +31,6 @@ class FuelController extends AbstractController
     public function index(Request $request, CallFuleApiService $callFuleApiService, FilterFuleData $filter): Response
     {
 
-        //$user = $userRepository->findOneBy(['id' => 51])->getVideos()->toArray()[0]->getTitle();
 
         //dd($user);
 

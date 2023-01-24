@@ -38,11 +38,6 @@ class ToDoListController extends AbstractController
         if (!count($errors)) {
 
             $task->setTaskDescription($taskDescription);
-
-            $task->setCreatedAt(new \DateTime());
-            $task->setUpdatedAt(new \DateTime());
-            $task->setDeletedAt(new \DateTime());
-
             $entityManager->persist($task);
             $entityManager->flush();
         } else {
