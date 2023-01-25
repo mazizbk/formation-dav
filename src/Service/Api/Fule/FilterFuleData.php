@@ -38,7 +38,7 @@ class FilterFuleData implements FilterFuleInterface
     {
 
         $this->output = array_filter($this->output, function ($row) use ($key, $value) {
-            return !($value !== '') || $row[$key] === $value;
+            return $value === '' || $row[$key] === $value;
         });
         return $this->output;
     }

@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -18,6 +20,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -26,28 +29,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
+
+
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 4096)]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstname = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastname = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Address $address = null;
 
-    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'following')]
-    private Collection $followed;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Command::class)]
+    private Collection $commands;
 
-    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'followed')]
-    private Collection $following;
+
 
     public function __construct()
     {
-        $this->followed = new ArrayCollection();
-        $this->following = new ArrayCollection();
+        $this->commands = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,7 +104,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -159,51 +164,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, self>
+     * @return Collection<int, Command>
      */
-    public function getFollowed(): Collection
+    public function getCommands(): Collection
     {
-        return $this->followed;
+        return $this->commands;
     }
 
-    public function addFollowed(self $followed): self
+    public function addCommand(Command $command): self
     {
-        if (!$this->followed->contains($followed)) {
-            $this->followed->add($followed);
+        if (!$this->commands->contains($command)) {
+            $this->commands->add($command);
+            $command->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeFollowed(self $followed): self
+    public function removeCommand(Command $command): self
     {
-        $this->followed->removeElement($followed);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getFollowing(): Collection
-    {
-        return $this->following;
-    }
-
-    public function addFollowing(self $following): self
-    {
-        if (!$this->following->contains($following)) {
-            $this->following->add($following);
-            $following->addFollowed($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFollowing(self $following): self
-    {
-        if ($this->following->removeElement($following)) {
-            $following->removeFollowed($this);
+        if ($this->commands->removeElement($command)) {
+            // set the owning side to null (unless already changed)
+            if ($command->getUser() === $this) {
+                $command->setUser(null);
+            }
         }
 
         return $this;

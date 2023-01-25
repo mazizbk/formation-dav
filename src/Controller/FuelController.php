@@ -27,7 +27,7 @@ class FuelController extends AbstractController
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      */
-    #[Route('/', name: 'home')]
+    #[Route('/fuel', name: 'fuel')]
     public function index(Request $request, CallFuleApiService $callFuleApiService, FilterFuleData $filter): Response
     {
 

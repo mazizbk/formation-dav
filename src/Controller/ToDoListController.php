@@ -35,7 +35,7 @@ class ToDoListController extends AbstractController
         ];
         $errors = $validator->validate($taskDescription, $constraints);
 
-        if (!count($errors)) {
+        if (count($errors) === 0) {
 
             $task->setTaskDescription($taskDescription);
             $entityManager->persist($task);
